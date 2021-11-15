@@ -1070,13 +1070,14 @@ class StyledLoadSpinner extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return SizedBox(
+    return const SizedBox(
         width: 24,
         height: 24,
-        child: CircularProgressIndicator(
-          backgroundColor: theme.backgroundColor,
-          valueColor: AlwaysStoppedAnimation<Color>(theme.primaryColor),
-        ));
+        // child: CircularProgressIndicator(
+        //   backgroundColor: theme.backgroundColor,
+        //   valueColor: AlwaysStoppedAnimation<Color>(theme.primaryColor),
+        // ),
+        child: CupertinoActivityIndicator());
   }
 }
 
