@@ -74,7 +74,7 @@ class ImagelistContainer extends HookConsumerWidget {
                             overrides: [
                               _currentUrl.overrideWithValue(imagesList[i]),
                             ],
-                            child: const ImageItem(),
+                            child: Container(height: 150, child: ImageItem()),
                           ),
                           Padding(
                             padding: const EdgeInsets.only(left: 8.0),
@@ -112,7 +112,7 @@ class ImagelistContainer extends HookConsumerWidget {
                         overrides: [
                           _currentUrl.overrideWithValue(imagesList[i]),
                         ],
-                        child: const ImageItem(),
+                        child: Container(height: 150, child: ImageItem()),
                       ),
                     );
                   }
