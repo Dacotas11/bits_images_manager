@@ -579,8 +579,8 @@ class ImageItem extends HookConsumerWidget {
       child: ExtendedImage.network(
         _url,
 
-        width: 100,
-        height: 100,
+        width: 150,
+        height: 150,
         fit: BoxFit.cover,
         cache: true,
         // border: Border.all(color: Colors.red, width: 1.0),
@@ -745,13 +745,13 @@ class RecentsPhotosPage extends StatelessWidget {
                         Alert(
                             context: context,
                             title: 'SUBIENDO IMAGENES',
-                            style: AlertStyle(
+                            style: const AlertStyle(
                                 isButtonVisible: false,
                                 isCloseButton: false,
                                 isOverlayTapDismiss: false,
                                 titleStyle:
                                     TextStyle(fontWeight: FontWeight.bold)),
-                            content: SizedBox(
+                            content: const SizedBox(
                               height: 80,
                               child: CircularProgressIndicator.adaptive(),
                             )).show();
