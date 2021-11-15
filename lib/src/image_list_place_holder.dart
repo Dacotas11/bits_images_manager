@@ -1,16 +1,16 @@
 import 'dart:typed_data';
 
-import 'package:bits_images_manager/src/_utils/device_info.dart';
-import 'package:bits_images_manager/src/_utils/imagesutils.dart';
-import 'package:bits_images_manager/src/asyncvaluewidget.dart';
-import 'package:bits_images_manager/src/pick_images_command.dart';
 import 'package:collection/collection.dart';
 import 'package:dio/dio.dart' as dio;
 import 'package:dotted_border/dotted_border.dart';
 import 'package:equatable/equatable.dart';
 import 'package:extended_image/extended_image.dart';
-
 import 'package:flutter/foundation.dart';
+
+import 'package:bits_images_manager/src/_utils/device_info.dart';
+import 'package:bits_images_manager/src/_utils/imagesutils.dart';
+import 'package:bits_images_manager/src/asyncvaluewidget.dart';
+import 'package:bits_images_manager/src/pick_images_command.dart';
 
 // import 'package:fancy_shimmer_image/fancy_shimmer_image.dart';
 import 'package:flutter/material.dart';
@@ -33,8 +33,10 @@ class ImagelistContainer extends HookConsumerWidget {
   const ImagelistContainer({
     Key? key,
     required this.onData,
+    required this.postUrl,
   }) : super(key: key);
   final void Function(List<String>) onData;
+  final String postUrl;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final imagesList = ref.watch(urlListProvider);
@@ -127,7 +129,9 @@ class ImagelistContainer extends HookConsumerWidget {
               // );
               Navigator.of(context).push(MaterialPageRoute<void>(
                   builder: (BuildContext context) {
-                    return const SelectedsImagesView();
+                    return SelectedsImagesView(
+                      postUrl: postUrl,
+                    );
                   },
                   fullscreenDialog: true));
             },
@@ -162,11 +166,17 @@ class ImagelistContainer extends HookConsumerWidget {
                   // shape: RoundedRectangleBorder(
                   //     borderRadius: BorderRadius.all(Radius.circular(20.0))),
                   child: SizedBox(
-                      width: 400, height: 500, child: SelectedsImagesView()));
+                      width: 400,
+                      height: 500,
+                      child: SelectedsImagesView(
+                        postUrl: '',
+                      )));
             })
         : Navigator.of(context).push(MaterialPageRoute<void>(
             builder: (BuildContext context) {
-              return const SelectedsImagesView();
+              return const SelectedsImagesView(
+                postUrl: '',
+              );
             },
             fullscreenDialog: true));
     onData(result);
@@ -195,8 +205,9 @@ class DragCompletionStringListResponse extends StatelessWidget
 }
 
 class SelectedsImagesView extends ConsumerStatefulWidget {
-  const SelectedsImagesView({Key? key}) : super(key: key);
-
+  const SelectedsImagesView({Key? key, required this.postUrl})
+      : super(key: key);
+  final String postUrl;
   @override
   _SelectedsImagesView createState() => _SelectedsImagesView();
 }
@@ -284,34 +295,43 @@ class _SelectedsImagesView extends ConsumerState<SelectedsImagesView>
             ? DeviceOS.isDesktopOrWeb
                 ? FloatingActionButton(
                     onPressed: () async {
-                      final images = await PickImagesCommand()
-                          .run(allowMultiple: true, enableCamera: false);
-                      final url = await ref
-                          .read(imageStorageProvider)
-                          .uploadImage(images.map((e) => e.path!).toList(), '');
-                      // ref.read(urlListProvider.notifier).add(a);
-                      int index = notifier.listItems.length;
-                      ref.read(dragItemListProvider.notifier).add(DragItem(
-                            index: index,
-                            order: index,
-                            value: url,
-                            selected: false,
-                            widget: SizedBox(
-                              // padding: const EdgeInsets
-                              child: Padding(
-                                padding: const EdgeInsets.all(4.0),
-                                child: ProviderScope(
-                                  overrides: [
-                                    _currentUrl.overrideWithValue(url),
-                                  ],
-                                  child: ImageItem(
-                                    url: url,
+                      try {
+                        final images = await PickImagesCommand()
+                            .run(allowMultiple: true, enableCamera: false);
+                        final urList = await ref
+                            .read(imageStorageProvider)
+                            .uploadImage(images.map((e) => e.path!).toList(),
+                                '', widget.postUrl);
+                        print(urList);
+                        // ref.read(urlListProvider.notifier).add(a);
+                        int index = notifier.listItems.length;
+
+                        for (var url in urList) {
+                          ref.read(dragItemListProvider.notifier).add(DragItem(
+                                index: index,
+                                order: index,
+                                value: url,
+                                selected: false,
+                                widget: SizedBox(
+                                  // padding: const EdgeInsets
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(4.0),
+                                    child: ProviderScope(
+                                      overrides: [
+                                        _currentUrl.overrideWithValue(url),
+                                      ],
+                                      child: ImageItem(
+                                        url: url,
+                                      ),
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ),
-                          ));
-                      setState(() {});
+                              ));
+                        }
+                        setState(() {});
+                      } catch (e) {
+                        print(e);
+                      }
                     },
                     child: const Icon(Icons.add),
                   )
@@ -321,16 +341,18 @@ class _SelectedsImagesView extends ConsumerState<SelectedsImagesView>
                       final permitted = await PhotoManager.requestPermission();
                       if (!permitted) return;
                       showModalBottomSheet(
-                              shape: const RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.vertical(
-                                      top: Radius.circular(20.0))),
-                              backgroundColor: Colors.white,
-                              context: context,
-                              isScrollControlled: true,
-                              builder: (context) => const Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: 18),
-                                  child: RecentsPhotosPage()))
-                          .whenComplete(() => setState(() {}));
+                          shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.vertical(
+                                  top: Radius.circular(20.0))),
+                          backgroundColor: Colors.white,
+                          context: context,
+                          isScrollControlled: true,
+                          builder: (context) => Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 18),
+                              child: RecentsPhotosPage(
+                                postUrl: widget.postUrl,
+                              ))).whenComplete(() => setState(() {}));
                     }))
             : const SizedBox();
       }),
@@ -519,10 +541,10 @@ class UrlList extends StateNotifier<List<String>> {
 
 final urlListProvider = StateNotifierProvider<UrlList, List<String>>((ref) {
   return UrlList([
-    'https://picsum.photos/500/300?random=1',
-    'https://picsum.photos/500/300?random=2',
-    'https://picsum.photos/500/300?random=3',
-    'https://picsum.photos/500/300?random=4'
+    // 'https://picsum.photos/500/300?random=1',
+    // 'https://picsum.photos/500/300?random=2',
+    // 'https://picsum.photos/500/300?random=3',
+    // 'https://picsum.photos/500/300?random=4'
   ]);
 });
 
@@ -551,17 +573,20 @@ class ImageItem extends HookConsumerWidget {
     //         cropAspectRatio: CropAspectRatios.ratio4_3);
     //   },
     // );
-    return ExtendedImage.network(
-      _url,
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 4.0),
+      child: ExtendedImage.network(
+        _url,
 
-      width: 100,
-      height: 100,
-      fit: BoxFit.cover,
-      cache: true,
-      // border: Border.all(color: Colors.red, width: 1.0),
-      shape: BoxShape.rectangle,
-      borderRadius: const BorderRadius.all(Radius.circular(20)),
-      //cancelToken: cancellationToken,
+        width: 100,
+        height: 100,
+        fit: BoxFit.cover,
+        cache: true,
+        // border: Border.all(color: Colors.red, width: 1.0),
+        shape: BoxShape.rectangle,
+        borderRadius: const BorderRadius.all(Radius.circular(20)),
+        //cancelToken: cancellationToken,
+      ),
     );
     // // // debugPrint('RECEADO $_url ${imagesList} ');
     // return Padding(
@@ -617,8 +642,11 @@ class CropAspectRatios {
 }
 
 class RecentsPhotosPage extends StatelessWidget {
-  const RecentsPhotosPage({Key? key}) : super(key: key);
-
+  const RecentsPhotosPage({
+    Key? key,
+    required this.postUrl,
+  }) : super(key: key);
+  final String postUrl;
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -713,7 +741,9 @@ class RecentsPhotosPage extends StatelessWidget {
                 Consumer(builder: (context, ref, child) {
                   return ElevatedButton(
                       onPressed: () async {
-                        await ref.read(imageStorageProvider).uploadPhotos();
+                        await ref
+                            .read(imageStorageProvider)
+                            .uploadPhotos(postUrl);
                         Navigator.of(context).pop();
                       },
                       child: const Text('Upload'));
@@ -929,39 +959,49 @@ class ImageStorageRepository {
   final Reader reader;
 
   ImageStorageRepository(this.reader);
-  Future<String> uploadImage(List<String> filesPath, url) async {
-    // var request = http.MultipartRequest(
-    //     'POST', Uri.parse('http://18.119.2.47:9419/post/producto'));
-    // request.files.add(await http.MultipartFile.fromPath('image', filepath));
-    // var res = await request
-    //     .send()
-    //     .then((result) async {
-    //       http.Response.fromStream(result).then((response) {
-    //         if (response.statusCode == 200) {
-    //           print("Uploaded! ");
-    //           print('response.body ' + response.body);
-    //         }
+  Future<List<String>> uploadImage(
+      List<String> filesPath, url, String postUrl) async {
+    List<String> _urlList = [];
+    try {
+      // var request = http.MultipartRequest(
+      //     'POST', Uri.parse('http://18.119.2.47:9419/post/producto'));
+      // request.files.add(await http.MultipartFile.fromPath('image', filepath));
+      // var res = await request
+      //     .send()
+      //     .then((result) async {
+      //       http.Response.fromStream(result).then((response) {
+      //         if (response.statusCode == 200) {
+      //           print("Uploaded! ");
+      //           print('response.body ' + response.body);
+      //         }
 
-    //         return response.body;
-    //       });
-    //     })
-    //     .catchError((err) => print('error : ' + err.toString()))
-    //     .whenComplete(() {});
-    List<dio.MultipartFile> files = [];
-    for (var path in filesPath) {
-      files.add(await dio.MultipartFile.fromFile((path)));
+      //         return response.body;
+      //       });
+      //     })
+      //     .catchError((err) => print('error : ' + err.toString()))
+      //     .whenComplete(() {});
+      List<dio.MultipartFile> files = [];
+      for (var path in filesPath) {
+        files.add(await dio.MultipartFile.fromFile((path)));
+      }
+
+      dio.FormData formData = dio.FormData.fromMap({
+        "file": files,
+      });
+
+      final response = await dio.Dio().post(postUrl, data: formData);
+      print('response data${response.data}');
+      _urlList =
+          response.data.toString().split(',').map((e) => e.trim()).toList();
+      return _urlList;
+    } catch (e) {
+      // print(e.toString());
     }
-
-    dio.FormData formData = dio.FormData.fromMap({
-      "file": files,
-    });
-
-    final response = await dio.Dio()
-        .post("http://18.119.2.47:9419/post/producto", data: formData);
-    return response.data;
+    return _urlList;
   }
 
-  Future<dynamic> uploadPhotos() async {
+  Future<List<String>> uploadPhotos(String postUrl) async {
+    List<String> _urlList = [];
     final assetsindexSelecteds = reader(selectedsIndexListProvider);
     var photosList = [];
     for (var i = 0; i < assetsindexSelecteds.length; i++) {
@@ -976,9 +1016,8 @@ class ImageStorageRepository {
     }
 
     final formData = dio.FormData.fromMap({'files': files});
-
-    var response = await dio.Dio()
-        .post('http://18.119.2.47:9419/post/producto', data: formData);
+// 'http://18.119.2.47:9419/post/producto'
+    var response = await dio.Dio().post(postUrl, data: formData);
     final url = response.data;
     reader(dragItemListProvider.notifier).add(DragItem(
       index: 0,
@@ -1000,8 +1039,9 @@ class ImageStorageRepository {
         ),
       ),
     ));
-
-    return response.data;
+    _urlList =
+        response.data.toString().split(',').map((e) => e.trim()).toList();
+    return _urlList;
   }
 }
 

@@ -34,7 +34,7 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class MyHomePage extends StatefulWidget {
+class MyHomePage extends ConsumerStatefulWidget {
   const MyHomePage({Key? key, required this.title}) : super(key: key);
 
   // This widget is the home page of your application. It is stateful, meaning
@@ -49,10 +49,10 @@ class MyHomePage extends StatefulWidget {
   final String title;
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  ConsumerState<MyHomePage> createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _MyHomePageState extends ConsumerState<MyHomePage> {
   int _counter = 0;
 
   void _incrementCounter() {
@@ -68,6 +68,9 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    ref
+        .read(urlListProvider.notifier)
+        .setNewList(['https://picsum.photos/500/300?random=1']);
     // This method is rerun every time setState is called, for instance as done
     // by the _incrementCounter method above.
     //
@@ -103,6 +106,7 @@ class _MyHomePageState extends State<MyHomePage> {
             SizedBox(
                 height: 80,
                 child: ImagelistContainer(
+                  postUrl: 'http://18.119.2.47:9419/post/producto',
                   onData: (newUrls) {
                     // ref
                     //     .read(selectedProductoProvider.notifier)

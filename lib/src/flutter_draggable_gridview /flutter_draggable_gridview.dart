@@ -95,7 +95,7 @@ class _DraggableGridViewBuilderState
   @override
   void initState() {
     super.initState();
-    assert(widget.listOfWidgets.isNotEmpty);
+    // assert(widget.listOfWidgets.isNotEmpty);
 
     /// [list] will update when the widget is beign dragged.
     _list = [...widget.listOfWidgets.map((e) => e.widget)];

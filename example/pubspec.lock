@@ -126,7 +126,7 @@ packages:
       name: dio
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "4.0.1"
+    version: "4.0.3"
   dotted_border:
     dependency: transitive
     description:
@@ -183,6 +183,20 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.8.2+1"
+  file_selector_linux:
+    dependency: transitive
+    description:
+      name: file_selector_linux
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.0.2+1"
+  file_selector_macos:
+    dependency: "direct main"
+    description:
+      name: file_selector_macos
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.0.4+1"
   file_selector_platform_interface:
     dependency: transitive
     description:
@@ -197,6 +211,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.8.1+2"
+  file_selector_windows:
+    dependency: transitive
+    description:
+      name: file_selector_windows
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.0.2+1"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -384,6 +405,20 @@ packages:
     dependency: transitive
     description:
       name: path_provider
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.7"
+  path_provider_android:
+    dependency: transitive
+    description:
+      name: path_provider_android
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.6"
+  path_provider_ios:
+    dependency: transitive
+    description:
+      name: path_provider_ios
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.6"
@@ -594,7 +629,7 @@ packages:
       name: wechat_camera_picker
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.5.1"
+    version: "2.6.0"
   win32:
     dependency: transitive
     description:

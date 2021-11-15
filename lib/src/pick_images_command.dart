@@ -21,39 +21,46 @@ class PickImagesCommand extends BaseAppCommand {
   Future<List<PickedImage>> run(
       {bool allowMultiple = false, bool enableCamera = true}) async {
     List<PickedImage> images = [];
-    if (DeviceOS.isDesktopOrWeb) {
-      final typeGroup =
-          XTypeGroup(label: 'images', extensions: ['jpg', 'jpeg', 'png']);
-      images = (await openFiles(acceptedTypeGroups: [typeGroup]))
-          .map((file) => PickedImage()..path = file.path)
-          .toList();
-    } else {
-      if (enableCamera) {
-        final picker = ImagePicker();
-        images = [
-          PickedImage()
-            ..path = (await picker.pickImage(source: ImageSource.camera))?.path
-        ];
+    try {
+      if (DeviceOS.isDesktopOrWeb) {
+        final typeGroup =
+            XTypeGroup(label: 'images', extensions: ['jpg', 'jpeg', 'png']);
+        images = (await openFiles(acceptedTypeGroups: [typeGroup]))
+            .map((file) => PickedImage()..path = file.path)
+            .toList();
       } else {
-        int maxImages = 24; // Need to pick some limit
-        // Get assets
-        List<Asset> assets = await MultiImagePicker.pickImages(
-            materialOptions: const MaterialOptions(
-              // actionBarColor:
-              // "#${appTheme.accent1.value.toRadixString(16).substring(2, 8)}",
-              // actionBarTitle: "Pick Scraps",
-              // statusBarColor:
-              // "#${appTheme.accent1.value.toRadixString(16).substring(2, 8)}",
-              allViewTitle: "All Photos",
-              useDetailsView: false,
-              selectCircleStrokeColor: "#000000",
-            ),
-            enableCamera: true,
-            maxImages: allowMultiple ? maxImages : 1);
-        for (var asset in assets) {
-          images.add(PickedImage()..asset = asset);
+        if (enableCamera) {
+          final picker = ImagePicker();
+          images = [
+            PickedImage()
+              ..path =
+                  (await picker.pickImage(source: ImageSource.camera))?.path
+          ];
+        } else {
+          int maxImages = 24; // Need to pick some limit
+          // Get assets
+          List<Asset> assets = await MultiImagePicker.pickImages(
+              materialOptions: const MaterialOptions(
+                // actionBarColor:
+                // "#${appTheme.accent1.value.toRadixString(16).substring(2, 8)}",
+                // actionBarTitle: "Pick Scraps",
+                // statusBarColor:
+                // "#${appTheme.accent1.value.toRadixString(16).substring(2, 8)}",
+                allViewTitle: "All Photos",
+                useDetailsView: false,
+                selectCircleStrokeColor: "#000000",
+              ),
+              enableCamera: true,
+              maxImages: allowMultiple ? maxImages : 1);
+          for (var asset in assets) {
+            images.add(PickedImage()..asset = asset);
+          }
         }
       }
+      return images;
+    } catch (e) {
+      var r = e;
+      print(e);
     }
     return images;
   }
