@@ -56,21 +56,21 @@ class _MyHomePageState extends ConsumerState<MyHomePage> {
   int _counter = 0;
 
   void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
+    // setState(() {
+    print(ref.read(urlListProvider.notifier).currentList);
+    //   // This call to setState tells the Flutter framework that something has
+    //   // changed in this State, which causes it to rerun the build method below
+    //   // so that the display can reflect the updated values. If we changed
+    //   // _counter without calling setState(), then the build method would not be
+    //   // called again, and so nothing would appear to happen.
+    //   _counter++;
+    // });
   }
 
   @override
   Widget build(BuildContext context) {
-    ref
-        .read(urlListProvider.notifier)
-        .setNewList(['https://picsum.photos/500/300?random=1']);
+    ref.read(urlListProvider.notifier);
+    // .setNewList(['https://picsum.photos/500/300?random=1']);
     // This method is rerun every time setState is called, for instance as done
     // by the _incrementCounter method above.
     //
@@ -108,6 +108,8 @@ class _MyHomePageState extends ConsumerState<MyHomePage> {
                 child: ImagelistContainer(
                   postUrl: 'http://18.119.2.47:9419/post/producto',
                   onData: (newUrls) {
+                    print(newUrls);
+
                     // ref
                     //     .read(selectedProductoProvider.notifier)
                     //     .actualizarUrlsImagenes(newUrls);

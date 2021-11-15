@@ -18,6 +18,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:oktoast/oktoast.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 // import 'package:reorderable_grid/reorderable_grid.dart';
 
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
@@ -179,7 +180,7 @@ class ImagelistContainer extends HookConsumerWidget {
               );
             },
             fullscreenDialog: true));
-    onData(result);
+    // onData(result);
   }
 }
 
@@ -741,9 +742,23 @@ class RecentsPhotosPage extends StatelessWidget {
                 Consumer(builder: (context, ref, child) {
                   return ElevatedButton(
                       onPressed: () async {
+                        Alert(
+                            context: context,
+                            title: 'SUBIENDO IMAGENES',
+                            style: AlertStyle(
+                                isButtonVisible: false,
+                                isCloseButton: false,
+                                isOverlayTapDismiss: false,
+                                titleStyle:
+                                    TextStyle(fontWeight: FontWeight.bold)),
+                            content: SizedBox(
+                              height: 80,
+                              child: CircularProgressIndicator.adaptive(),
+                            )).show();
                         await ref
                             .read(imageStorageProvider)
                             .uploadPhotos(postUrl);
+                        Alert(context: context).dismiss();
                         Navigator.of(context).pop();
                       },
                       child: const Text('Upload'));
