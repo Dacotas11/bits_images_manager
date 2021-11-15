@@ -5,6 +5,7 @@ import 'package:dio/dio.dart' as dio;
 import 'package:dotted_border/dotted_border.dart';
 import 'package:equatable/equatable.dart';
 import 'package:extended_image/extended_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 
 import 'package:bits_images_manager/src/_utils/device_info.dart';
@@ -753,7 +754,7 @@ class RecentsPhotosPage extends StatelessWidget {
                                     TextStyle(fontWeight: FontWeight.bold)),
                             content: const SizedBox(
                               height: 80,
-                              child: CircularProgressIndicator.adaptive(),
+                              child: CupertinoActivityIndicator(),
                             )).show();
                         await ref
                             .read(imageStorageProvider)

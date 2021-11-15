@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -13,7 +14,7 @@ class AsyncValueWidget<T> extends StatelessWidget {
   Widget build(BuildContext context) {
     return value.when(
       data: data,
-      loading: () => const Center(child: CircularProgressIndicator()),
+      loading: () => const Center(child: CupertinoActivityIndicator()),
       error: (e, t) => Center(
         child: Text(
           e.toString(),
@@ -41,7 +42,7 @@ class AsyncValueSliverWidget<T> extends StatelessWidget {
     return value.when(
       data: data,
       loading: () => const SliverToBoxAdapter(
-          child: Center(child: CircularProgressIndicator())),
+          child: Center(child: CupertinoActivityIndicator())),
       error: (e, a) => SliverToBoxAdapter(
         child: Center(
           child: Text(
