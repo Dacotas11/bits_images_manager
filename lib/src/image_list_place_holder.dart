@@ -162,20 +162,20 @@ class ImagelistContainer extends HookConsumerWidget {
             barrierDismissible: false,
             context: context,
             builder: (BuildContext context) {
-              return const Dialog(
+              return Dialog(
                   // shape: RoundedRectangleBorder(
                   //     borderRadius: BorderRadius.all(Radius.circular(20.0))),
                   child: SizedBox(
                       width: 400,
                       height: 500,
                       child: SelectedsImagesView(
-                        postUrl: '',
+                        postUrl: postUrl,
                       )));
             })
         : Navigator.of(context).push(MaterialPageRoute<void>(
             builder: (BuildContext context) {
-              return const SelectedsImagesView(
-                postUrl: '',
+              return SelectedsImagesView(
+                postUrl: postUrl,
               );
             },
             fullscreenDialog: true));
@@ -302,7 +302,7 @@ class _SelectedsImagesView extends ConsumerState<SelectedsImagesView>
                             .read(imageStorageProvider)
                             .uploadImage(images.map((e) => e.path!).toList(),
                                 '', widget.postUrl);
-                        print(urList);
+                        // print(urList);
                         // ref.read(urlListProvider.notifier).add(a);
                         int index = notifier.listItems.length;
 
@@ -1018,29 +1018,32 @@ class ImageStorageRepository {
     final formData = dio.FormData.fromMap({'files': files});
 // 'http://18.119.2.47:9419/post/producto'
     var response = await dio.Dio().post(postUrl, data: formData);
-    final url = response.data;
-    reader(dragItemListProvider.notifier).add(DragItem(
-      index: 0,
-      order: 0,
-      value: url,
-      selected: false,
-      widget: SizedBox(
-        // padding: const EdgeInsets
-        child: Padding(
-          padding: const EdgeInsets.all(4.0),
-          child: ProviderScope(
-            overrides: [
-              _currentUrl.overrideWithValue(url),
-            ],
-            child: ImageItem(
-              url: url,
+    _urlList =
+        response.data.toString().split(',').map((e) => e.trim()).toList();
+
+    for (var url in _urlList) {
+      reader(dragItemListProvider.notifier).add(DragItem(
+        index: 0,
+        order: 0,
+        value: url,
+        selected: false,
+        widget: SizedBox(
+          // padding: const EdgeInsets
+          child: Padding(
+            padding: const EdgeInsets.all(4.0),
+            child: ProviderScope(
+              overrides: [
+                _currentUrl.overrideWithValue(url),
+              ],
+              child: ImageItem(
+                url: url,
+              ),
             ),
           ),
         ),
-      ),
-    ));
-    _urlList =
-        response.data.toString().split(',').map((e) => e.trim()).toList();
+      ));
+    }
+
     return _urlList;
   }
 }
