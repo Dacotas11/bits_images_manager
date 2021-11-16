@@ -756,6 +756,7 @@ class RecentsPhotosPage extends StatelessWidget {
                               height: 80,
                               child: CupertinoActivityIndicator(),
                             )).show();
+
                         await ref
                             .read(imageStorageProvider)
                             .uploadPhotos(postUrl);
@@ -1038,26 +1039,28 @@ class ImageStorageRepository {
         response.data.toString().split(',').map((e) => e.trim()).toList();
 
     for (var url in _urlList) {
-      reader(dragItemListProvider.notifier).add(DragItem(
-        index: 0,
-        order: 0,
-        value: url,
-        selected: false,
-        widget: SizedBox(
-          // padding: const EdgeInsets
-          child: Padding(
-            padding: const EdgeInsets.all(4.0),
-            child: ProviderScope(
-              overrides: [
-                _currentUrl.overrideWithValue(url),
-              ],
-              child: ImageItem(
-                url: url,
+      if (url != '') {
+        reader(dragItemListProvider.notifier).add(DragItem(
+          index: 0,
+          order: 0,
+          value: url,
+          selected: false,
+          widget: SizedBox(
+            // padding: const EdgeInsets
+            child: Padding(
+              padding: const EdgeInsets.all(4.0),
+              child: ProviderScope(
+                overrides: [
+                  _currentUrl.overrideWithValue(url),
+                ],
+                child: ImageItem(
+                  url: url,
+                ),
               ),
             ),
           ),
-        ),
-      ));
+        ));
+      }
     }
 
     return _urlList;
