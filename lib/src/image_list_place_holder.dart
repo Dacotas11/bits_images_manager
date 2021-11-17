@@ -579,7 +579,7 @@ class ImageItem extends HookConsumerWidget {
     //   },
     // );
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 4.0),
+      padding: const EdgeInsets.symmetric(horizontal: 15.0),
       child: ExtendedImage.network(
         _url,
 
