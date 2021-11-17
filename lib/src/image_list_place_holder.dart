@@ -55,7 +55,7 @@ class ImagelistContainer extends HookConsumerWidget {
         ? Scrollbar(
             controller: controller,
             child: Container(
-                height: 150,
+                // height: 150,
                 child: ListView.builder(
                     controller: controller,
                     scrollDirection: Axis.horizontal,
@@ -76,8 +76,10 @@ class ImagelistContainer extends HookConsumerWidget {
                                 overrides: [
                                   _currentUrl.overrideWithValue(imagesList[i]),
                                 ],
-                                child:
-                                    Container(height: 150, child: ImageItem()),
+                                child: Container(
+                                  // height: 150,
+                                  child: ImageItem(),
+                                ),
                               ),
                               Padding(
                                 padding: const EdgeInsets.only(left: 8.0),
@@ -115,7 +117,10 @@ class ImagelistContainer extends HookConsumerWidget {
                             overrides: [
                               _currentUrl.overrideWithValue(imagesList[i]),
                             ],
-                            child: Container(height: 150, child: ImageItem()),
+                            child: Container(
+                              // height: 150,
+                              child: ImageItem(),
+                            ),
                           ),
                         );
                       }
