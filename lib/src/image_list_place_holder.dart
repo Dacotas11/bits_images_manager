@@ -583,8 +583,8 @@ class ImageItem extends HookConsumerWidget {
       child: ExtendedImage.network(
         _url,
 
-        width: 150,
-        height: 150,
+        width: 100,
+        height: 100,
         fit: BoxFit.cover,
         cache: true,
         // border: Border.all(color: Colors.red, width: 1.0),
