@@ -54,69 +54,72 @@ class ImagelistContainer extends HookConsumerWidget {
     return imagesList.isNotEmpty
         ? Scrollbar(
             controller: controller,
-            child: ListView.builder(
-                controller: controller,
-                scrollDirection: Axis.horizontal,
-                shrinkWrap: true,
-                itemCount: imagesList.length,
-                itemBuilder: (ctx, i) {
-                  if (i == imagesList.length - 1) {
-                    return InkWell(
-                      onDoubleTap: () {
-                        openPhotoVieweDialog(context, imagesList);
-                      },
-                      onTap: () {
-                        showPicker(context);
-                      },
-                      child: Row(
-                        children: [
-                          ProviderScope(
+            child: Container(
+                height: 150,
+                child: ListView.builder(
+                    controller: controller,
+                    scrollDirection: Axis.horizontal,
+                    shrinkWrap: true,
+                    itemCount: imagesList.length,
+                    itemBuilder: (ctx, i) {
+                      if (i == imagesList.length - 1) {
+                        return InkWell(
+                          onDoubleTap: () {
+                            openPhotoVieweDialog(context, imagesList);
+                          },
+                          onTap: () {
+                            showPicker(context);
+                          },
+                          child: Row(
+                            children: [
+                              ProviderScope(
+                                overrides: [
+                                  _currentUrl.overrideWithValue(imagesList[i]),
+                                ],
+                                child:
+                                    Container(height: 150, child: ImageItem()),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 8.0),
+                                child: SizedBox(
+                                  height: 100,
+                                  width: 100,
+                                  child: DottedBorder(
+                                    child: Center(
+                                      child: Icon(
+                                        Icons.add_circle,
+                                        size: 50,
+                                        color: Theme.of(context).primaryColor,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      } else {
+                        return InkWell(
+                          onDoubleTap: () {
+                            openPhotoVieweDialog(context, imagesList);
+                          },
+                          onTap: () async {
+                            // Navigator.of(context).push(MaterialPageRoute<void>(
+                            //     builder: (BuildContext context) {
+                            //       return const SelectedsImagesView();
+                            //     },
+                            //     fullscreenDialog: true));
+                            showPicker(context);
+                          },
+                          child: ProviderScope(
                             overrides: [
                               _currentUrl.overrideWithValue(imagesList[i]),
                             ],
                             child: Container(height: 150, child: ImageItem()),
                           ),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 8.0),
-                            child: SizedBox(
-                              height: 100,
-                              width: 100,
-                              child: DottedBorder(
-                                child: Center(
-                                  child: Icon(
-                                    Icons.add_circle,
-                                    size: 50,
-                                    color: Theme.of(context).primaryColor,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    );
-                  } else {
-                    return InkWell(
-                      onDoubleTap: () {
-                        openPhotoVieweDialog(context, imagesList);
-                      },
-                      onTap: () async {
-                        // Navigator.of(context).push(MaterialPageRoute<void>(
-                        //     builder: (BuildContext context) {
-                        //       return const SelectedsImagesView();
-                        //     },
-                        //     fullscreenDialog: true));
-                        showPicker(context);
-                      },
-                      child: ProviderScope(
-                        overrides: [
-                          _currentUrl.overrideWithValue(imagesList[i]),
-                        ],
-                        child: Container(height: 150, child: ImageItem()),
-                      ),
-                    );
-                  }
-                }),
+                        );
+                      }
+                    })),
           )
         : InkWell(
             onDoubleTap: () {
