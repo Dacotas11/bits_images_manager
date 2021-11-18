@@ -1045,8 +1045,7 @@ class ImageStorageRepository {
     var response = await dio.Dio().post(postUrl, data: formData);
     var responseData = response.data.toString();
     responseData = responseData.replaceAll(RegExp(r'("|\]|\[)'), '');
-    _urlList =
-        response.data.toString().split(',').map((e) => e.trim()).toList();
+    _urlList = responseData.split(',').map((e) => e.trim()).toList();
 
     for (var url in _urlList) {
       if (url != '') {
