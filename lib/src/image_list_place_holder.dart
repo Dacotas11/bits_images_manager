@@ -1043,6 +1043,8 @@ class ImageStorageRepository {
     final formData = dio.FormData.fromMap({'files': files});
 // 'http://18.119.2.47:9419/post/producto'
     var response = await dio.Dio().post(postUrl, data: formData);
+    var responseData = response.data.toString();
+    responseData = responseData.replaceAll(RegExp(r'("|\]|\[)'), '');
     _urlList =
         response.data.toString().split(',').map((e) => e.trim()).toList();
 
