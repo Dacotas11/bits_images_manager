@@ -659,128 +659,134 @@ class RecentsPhotosPage extends StatelessWidget {
   final String postUrl;
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding:
-          EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-      child: SizedBox(
-        height: MediaQuery.of(context).size.height * 0.95,
-        child: Column(
-          children: <Widget>[
-            const Center(child: Icon(Icons.drag_handle)),
-            Row(
-              // mainAxisSize: MainAxisSize.min,
-              children: const <Widget>[
-                Padding(
-                  padding: EdgeInsets.only(
-                      bottom: 8.0, top: 24, left: 16, right: 16),
-                  child: Text(
-                    "Imagenes Recientes",
-                    style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+    return Consumer(builder: (context, ref, widget) {
+      final assetsValue = ref.watch(assetEntityStateNotifierProvider.notifier);
+      return Padding(
+        padding:
+            EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+        child: SizedBox(
+          height: MediaQuery.of(context).size.height * 0.95,
+          child: Column(
+            children: <Widget>[
+              const Center(child: Icon(Icons.drag_handle)),
+              Row(
+                // mainAxisSize: MainAxisSize.min,
+                children: const <Widget>[
+                  Padding(
+                    padding: EdgeInsets.only(
+                        bottom: 8.0, top: 24, left: 16, right: 16),
+                    child: Text(
+                      "Imagenes Recientes",
+                      style:
+                          TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+                      textAlign: TextAlign.center,
+                    ),
                   ),
-                ),
-              ],
-            ),
+                ],
+              ),
 
-//  PickMethod().camera(
-//                       maxAssetsCount: 20,
-//                       handleResult:
-//                           (BuildContext context, AssetEntity result) =>
-//                               Navigator.of(context).pop(<AssetEntity>[result])),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    IconButton(
+              //  PickMethod().camera(
+              //                       maxAssetsCount: 20,
+              //                       handleResult:
+              //                           (BuildContext context, AssetEntity result) =>
+              //                               Navigator.of(context).pop(<AssetEntity>[result])),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(
+                          icon: const Icon(
+                            Icons.photo_camera,
+                          ),
+                          onPressed: () async {
+                            final AssetEntity? result =
+                                await CameraPicker.pickFromCamera(
+                              context,
+                              textDelegate: EnglishCameraPickerTextDelegate(),
+                              enableRecording: true,
+                            );
+                            if (result != null) {
+                              assetsValue._fetchAssets();
+                              // print(result);
+                            }
+                          }),
+                      IconButton(
                         icon: const Icon(
-                          Icons.photo_camera,
+                          Icons.collections_outlined,
                         ),
                         onPressed: () async {
-                          final AssetEntity? result =
-                              await CameraPicker.pickFromCamera(
-                            context,
-                            textDelegate: EnglishCameraPickerTextDelegate(),
-                            enableRecording: true,
-                          );
-                          if (result != null) {
-                            // print(result);
-                            //
-                          }
-                        }),
-                    IconButton(
-                      icon: const Icon(
-                        Icons.collections_outlined,
-                      ),
-                      onPressed: () async {
-                        await AssetPicker.pickAssets(context,
-                            themeColor: Theme.of(context).primaryColor,
-                            textDelegate: EnglishTextDelegate(),
-                            requestType: RequestType.common,
-                            specialItemPosition: SpecialItemPosition.prepend,
-                            specialItemBuilder: (BuildContext context) {
-                          return GestureDetector(
-                            behavior: HitTestBehavior.opaque,
-                            onTap: () async {
-                              final AssetEntity? result =
-                                  await CameraPicker.pickFromCamera(
-                                context,
-                                textDelegate: EnglishCameraPickerTextDelegate(),
-                                enableRecording: true,
-                              );
-                              if (result != null) {
-                                // print(result);
-                                // handleResult(context, result);
-                              }
-                            },
-                            child: const Center(
-                              child: Icon(Icons.camera_enhance, size: 42.0),
-                            ),
-                          );
-                        });
+                          await AssetPicker.pickAssets(context,
+                              themeColor: Theme.of(context).primaryColor,
+                              textDelegate: EnglishTextDelegate(),
+                              requestType: RequestType.common,
+                              specialItemPosition: SpecialItemPosition.prepend,
+                              specialItemBuilder: (BuildContext context) {
+                            return GestureDetector(
+                              behavior: HitTestBehavior.opaque,
+                              onTap: () async {
+                                final AssetEntity? result =
+                                    await CameraPicker.pickFromCamera(
+                                  context,
+                                  textDelegate:
+                                      EnglishCameraPickerTextDelegate(),
+                                  enableRecording: true,
+                                );
+                                if (result != null) {
+                                  // print(result);
+                                  // handleResult(context, result);
+                                }
+                              },
+                              child: const Center(
+                                child: Icon(Icons.camera_enhance, size: 42.0),
+                              ),
+                            );
+                          });
 
-                        // print(selectedImages!.first.thumbData);
-                        // List<PickedImage> images = await PickImagesCommand()
-                        //     .run(allowMultiple: true, enableCamera: false);
-                      },
-                    )
-                    // child: Text('PTHOTO')),
-                  ],
-                ),
-                Consumer(builder: (context, ref, child) {
-                  return ElevatedButton(
-                      onPressed: () async {
-                        Alert(
-                            context: context,
-                            title: 'SUBIENDO IMAGENES',
-                            style: const AlertStyle(
-                                isButtonVisible: false,
-                                isCloseButton: false,
-                                isOverlayTapDismiss: false,
-                                titleStyle:
-                                    TextStyle(fontWeight: FontWeight.bold)),
-                            content: const SizedBox(
-                              height: 80,
-                              child: CupertinoActivityIndicator(),
-                            )).show();
+                          // print(selectedImages!.first.thumbData);
+                          // List<PickedImage> images = await PickImagesCommand()
+                          //     .run(allowMultiple: true, enableCamera: false);
+                        },
+                      )
+                      // child: Text('PTHOTO')),
+                    ],
+                  ),
+                  Consumer(builder: (context, ref, child) {
+                    return ElevatedButton(
+                        onPressed: () async {
+                          Alert(
+                              context: context,
+                              title: 'SUBIENDO IMAGENES',
+                              style: const AlertStyle(
+                                  isButtonVisible: false,
+                                  isCloseButton: false,
+                                  isOverlayTapDismiss: false,
+                                  titleStyle:
+                                      TextStyle(fontWeight: FontWeight.bold)),
+                              content: const SizedBox(
+                                height: 80,
+                                child: CupertinoActivityIndicator(),
+                              )).show();
 
-                        await ref
-                            .read(imageStorageProvider)
-                            .uploadPhotos(postUrl);
-                        Alert(context: context).dismiss();
-                        Navigator.of(context).pop();
-                      },
-                      child: const Text('Upload'));
-                }),
-              ],
-            ),
-            // Adding the form here
-            const Expanded(child: AssetsGallery()),
-          ],
+                          await ref
+                              .read(imageStorageProvider)
+                              .uploadPhotos(postUrl);
+                          Alert(context: context).dismiss();
+                          Navigator.of(context).pop();
+                        },
+                        child: const Text('Upload'));
+                  }),
+                ],
+              ),
+              // Adding the form here
+              const Expanded(child: AssetsGallery()),
+            ],
+          ),
         ),
-      ),
-    );
+      );
+    });
   }
 }
 
