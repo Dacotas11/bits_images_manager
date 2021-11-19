@@ -368,7 +368,16 @@ class _SelectedsImagesView extends ConsumerState<SelectedsImagesView>
                                   const EdgeInsets.symmetric(horizontal: 18),
                               child: RecentsPhotosPage(
                                 postUrl: widget.postUrl,
-                              ))).whenComplete(() => setState(() {}));
+                              ))).whenComplete(() {
+                        final result = ref
+                            .read(dragItemListProvider.notifier)
+                            .listItems
+                            .map((e) => e.value.toString())
+                            .toList();
+
+                        ref.read(urlListProvider.notifier).setNewList(result);
+                        setState(() {});
+                      });
                     }))
             : const SizedBox();
       }),
