@@ -157,15 +157,6 @@ class ImagelistContainer extends HookConsumerWidget {
           );
   }
 
-  void openPhotoVieweDialog(BuildContext context, List<String> urlImages) =>
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return GalleryPhotoViewWrapper(
-            imagesUrl: urlImages,
-          );
-        },
-      );
   void showPicker(BuildContext context) async {
     var result = DeviceOS.isDesktopOrWeb
         ? await showDialog(
@@ -192,6 +183,16 @@ class ImagelistContainer extends HookConsumerWidget {
     // onData(result);
   }
 }
+
+void openPhotoVieweDialog(BuildContext context, List<String> urlImages) =>
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return GalleryPhotoViewWrapper(
+          imagesUrl: urlImages,
+        );
+      },
+    );
 
 class DragCompletionStringListResponse extends StatelessWidget
     implements DragCompletion {
@@ -257,8 +258,13 @@ class _SelectedsImagesView extends ConsumerState<SelectedsImagesView>
               overrides: [
                 _currentUrl.overrideWithValue(imagesList[i]),
               ],
-              child: ImageItem(
-                url: _url,
+              child: InkWell(
+                onDoubleTap: () {
+                  openPhotoVieweDialog(context, imagesList);
+                },
+                child: ImageItem(
+                  url: _url,
+                ),
               ),
             ),
           ),
@@ -675,11 +681,13 @@ class RecentsPhotosPage extends StatelessWidget {
                   Padding(
                     padding: EdgeInsets.only(
                         bottom: 8.0, top: 24, left: 16, right: 16),
-                    child: Text(
-                      "Imagenes Recientes",
-                      style:
-                          TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
-                      textAlign: TextAlign.center,
+                    child: Center(
+                      child: Text(
+                        "Imagenes Recientes",
+                        style: TextStyle(
+                            fontSize: 28, fontWeight: FontWeight.bold),
+                        textAlign: TextAlign.center,
+                      ),
                     ),
                   ),
                 ],
